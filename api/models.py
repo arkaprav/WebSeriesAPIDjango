@@ -15,12 +15,15 @@ class WebSeries(models.Model):
     title = models.CharField(max_length=50)
     storyline = models.CharField(max_length = 200)
     episodes = models.PositiveIntegerField()
-    platform = models.ForeignKey(StreamPlatform, on_delete=models.CASCADE, related_name = 'watchlist')
+    platform = models.ManyToManyField(StreamPlatform, blank=True, related_name = 'webseries')
     is_active = models.BooleanField(default = True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+    
+    def get_streaming(self):
+        ','.join([i.name for i in self.platform.all()])
     
 
 class Review(models.Model):
@@ -31,4 +34,4 @@ class Review(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.watch.title + " -- " + str(self.rating)
+        return self.webseries.title + " -- " + str(self.rating)
